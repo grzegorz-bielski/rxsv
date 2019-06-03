@@ -1,0 +1,33 @@
+{
+  "defaultSeverity": "warning",
+  "extends": [
+    "tslint:recommended",
+    "tslint-immutable",
+    "tslint-config-prettier"
+  ],
+  "linterOptions": {
+    "exclude": ["node_modules/**"]
+  },
+  "rules": {
+    "quotemark": [true, "single"],
+    "indent": [true, "spaces", 2],
+    "interface-name": false,
+    "ordered-imports": false,
+    "variable-name": false,
+    "object-literal-sort-keys": false,
+    "no-consecutive-blank-lines": false,
+    "no-var-keyword": true,
+    "no-parameter-reassignment": true,
+    "typedef": [true, "call-signature"],
+    "no-let": true,
+    "no-any": true,
+    "no-object-mutation": true,
+    "no-delete": true,
+    "no-loop-statement": true,
+    "no-throw": true,
+    "no-try": true,
+    "no-reject": true,
+    "no-mixed-interface": true,
+    "no-if-statement": true
+  }
+}

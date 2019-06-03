@@ -1,25 +1,29 @@
 {
-  "name": "rxs",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "build": "webpack --mode=production",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "rxjs": "^6.5.2"
-  },
-  "devDependencies": {
-    "fork-ts-checker-webpack-plugin": "^1.3.4",
-    "jest": "^24.8.0",
-    "prettier": "^1.17.1",
-    "ts-loader": "^6.0.2",
-    "tslint-config-prettier": "^1.18.0",
-    "tslint-immutable": "^5.5.2",
-    "tslint-loader": "^3.5.4",
-    "webpack": "^4.32.2"
-  }
+    "name": "rxsv",
+    "version": "0.0.1",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "build": "webpack --mode=production",
+        "prepare": "npm run build",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "rxjs": "^6.5.2"
+    },
+    "devDependencies": {
+        "fork-ts-checker-webpack-plugin": "^1.3.4",
+        "jest": "^24.8.0",
+        "prettier": "^1.17.1",
+        "ts-loader": "^6.0.2",
+        "tslint": "^5.17.0",
+        "tslint-config-prettier": "^1.18.0",
+        "tslint-immutable": "^5.5.2",
+        "tslint-loader": "^3.5.4",
+        "typescript": "^3.5.1",
+        "webpack": "^4.32.2",
+        "webpack-cli": "^3.3.2"
+    }
 }
