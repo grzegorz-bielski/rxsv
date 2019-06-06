@@ -1,5 +1,13 @@
 import { BehaviorSubject, Subject, Observable, merge, OperatorFunction } from 'rxjs';
-import { scan, mergeMap, shareReplay, map, distinctUntilChanged, pluck } from 'rxjs/operators';
+import {
+    scan,
+    mergeMap,
+    shareReplay,
+    map,
+    distinctUntilChanged,
+    pluck,
+    filter,
+} from 'rxjs/operators';
 
 // tslint:disable:no-any
 // tslint:disable:no-mixed-interface
@@ -29,7 +37,7 @@ export interface Store<A, S> {
 
 export function createStore<A extends Action, S>(
     rootReducer: Reducer<A, S>,
-    rootEffect: Effect<A, S>,
+    rootEffect?: Effect<A, S>,
 ): Store<A, S> {
     const action$ = new BehaviorSubject<A>(createAction('@@INIT') as A);
     const effect$ = new Subject<Effect<A, S>>();
@@ -40,12 +48,14 @@ export function createStore<A extends Action, S>(
         shareReplay(),
     );
 
-    // setup effects pipeline
-    effect$
-        .pipe(mergeMap(effect => effect(action$, state$)))
-        .subscribe(action => action$.next(action));
+    if (rootEffect) {
+        // setup effects pipeline
+        effect$
+            .pipe(mergeMap(effect => effect(action$, state$)))
+            .subscribe(action => action$.next(action));
 
-    effect$.next(rootEffect);
+        effect$.next(rootEffect);
+    }
 
     return {
         action$,
@@ -93,4 +103,50 @@ export function select<A, B>(
                 : pluck<A, B>(...[pathOrMapper as string, ...paths]),
             distinctUntilChanged(),
         );
+}
+
+// TODO: improve this, taken from: https://github.com/Hotell/rex-tils
+export type ActionsOfType<ActionUnion, ActionType extends string> = ActionUnion extends Action<
+    ActionType
+>
+    ? ActionUnion
+    : never;
+
+// export function ofType<V, T1 extends string>(t1: T1): OperatorFunction<V, ActionsOfType<V, T1>>;
+export function ofType<V, T1 extends string>(t1: T1): OperatorFunction<V, ActionsOfType<V, T1>>;
+export function ofType<V, T1 extends string, T2 extends string>(
+    t1: T1,
+    t2: T2,
+): OperatorFunction<V, ActionsOfType<V, T1 | T2>>;
+export function ofType<V, T1 extends string, T2 extends string, T3 extends string>(
+    t1: T1,
+    t2: T2,
+    t3: T3,
+): OperatorFunction<V, ActionsOfType<V, T1 | T2 | T3>>;
+export function ofType<
+    V,
+    T1 extends string,
+    T2 extends string,
+    T3 extends string,
+    T4 extends string
+>(t1: T1, t2: T2, t3: T3, t4: T4): OperatorFunction<V, ActionsOfType<V, T1 | T2 | T3 | T4>>;
+export function ofType<
+    V,
+    T1 extends string,
+    T2 extends string,
+    T3 extends string,
+    T4 extends string,
+    T5 extends string
+>(
+    t1: T1,
+    t2: T2,
+    t3: T3,
+    t4: T4,
+    t5: T5,
+): OperatorFunction<V, ActionsOfType<V, T1 | T2 | T3 | T4 | T5>>;
+
+// tslint:disable:typedef
+export function ofType(keys: string) {
+    return (source: Observable<Action>) =>
+        source.pipe(filter(action => keys.indexOf(action.type) !== -1));
 }
