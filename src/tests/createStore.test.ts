@@ -1,8 +1,6 @@
-import { ignoreElements } from 'rxjs/operators';
-import { TestScheduler } from 'rxjs/testing';
-
 import { Observable } from 'rxjs';
-import { mapTo } from 'rxjs/operators';
+import { ignoreElements, mapTo } from 'rxjs/operators';
+import { TestScheduler } from 'rxjs/testing';
 
 import { createStore } from '../createStore';
 import { Reducer, Effect, Action } from '../types';
