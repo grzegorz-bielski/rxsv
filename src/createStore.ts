@@ -8,10 +8,9 @@ export function createStore<A extends Action, S>(
     rootReducer: Reducer<A, S>,
     rootEffect?: Effect<A, S>,
 ): Store<A, S> {
-    const action$ = new BehaviorSubject<A>(createAction('@@INIT') as A);
-    const effect$ = new Subject<Effect<A, S>>();
-
     // setup store and reducers
+    const action$ = new BehaviorSubject<A>(createAction('@@INIT') as A);
+
     const state$ = action$.pipe(
         scan(
             (prevState, action) => rootReducer(prevState, action),
@@ -22,6 +21,8 @@ export function createStore<A extends Action, S>(
 
     if (rootEffect) {
         // setup effects pipeline
+        const effect$ = new Subject<Effect<A, S>>();
+
         effect$
             .pipe(mergeMap(effect => effect(action$, state$)))
             .subscribe(action => action$.next(action));

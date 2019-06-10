@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { ignoreElements, mapTo } from 'rxjs/operators';
 import { TestScheduler } from 'rxjs/testing';
 
@@ -38,6 +38,17 @@ describe('createStore', () => {
                     a: initAction,
                 });
             });
+        });
+
+        it('should not create effects pipeline if no effects are provided', () => {
+            const spy = jest.spyOn(Subject.prototype, 'next');
+
+            createStore(reducer, effect);
+            createStore(reducer);
+
+            expect(spy).toHaveBeenCalledTimes(1);
+
+            spy.mockRestore();
         });
     });
 
