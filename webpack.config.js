@@ -6,7 +6,7 @@ module.exports = {
     output: {
         path: path.join(__dirname, './dist'),
         libraryTarget: 'umd',
-        libraryExport: 'default',
+        umdNamedDefine: true,
         library: 'rxsv',
         filename: 'index.js',
     },

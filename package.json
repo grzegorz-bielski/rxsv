@@ -1,8 +1,9 @@
 {
     "name": "rxsv",
-    "version": "0.0.5",
+    "version": "0.0.10",
     "description": "",
     "main": "dist/index.js",
+    "types": "dist/index.d.ts",
     "scripts": {
         "build": "webpack --mode=production",
         "prepare": "npm run build",
@@ -11,6 +12,9 @@
         "serve:cov": "http-server ./coverage/lcov-report"
     },
     "author": "",
+    "files": [
+        "dist/**/*"
+    ],
     "license": "ISC",
     "dependencies": {
         "rxjs": "^6.5.2"

@@ -3,7 +3,7 @@
         "baseUrl": "src",
         "outDir": "./dist",
         "target": "esnext",
-        "module": "esnext",
+        "module": "commonjs",
         "declaration": true,
         "strict": true,
         "jsx": "preserve",
