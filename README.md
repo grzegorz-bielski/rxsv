@@ -1,6 +1,6 @@
 ## rxsv
 
-Minimal state management library based on `RxJS` heavily inspired by `Redux` and `Redux-Observable`.
+Minimal state management library based on `RxJS` heavily inspired by `Redux` and `Redux-Observable` with `rex-tils`
 
 It's main characteristic is smooth integration with `Vue.js` using `vue-rx` and small boilerplate.
 
@@ -8,42 +8,39 @@ It's main characteristic is smooth integration with `Vue.js` using `vue-rx` and 
 
 ```bash
 npm install rxjs
-npm install vue-rx # if you are using vue
+npm install vue-rx
+## the package is not yet available on the public npm
 npm install --registry npm.hal.skygate.io rxsv
 ```
 
 ### Example:
 
-work in progress...
-
 ```typescript
-import VueRx from 'vue-rx';
-import * as RxSV from 'rxsv/src'; // temp
+///////////////// visualization module
+import { ActionsUnion, createAction } from 'rxsv';
 
-Vue.use(VueRx);
-
-///////////////// some module A
-
-// actions
-export const DATA_ENTRY_ACTIVATED = '[vis] DATA_ENTRY_ACTIVATED';
+// actions.ts
+export const USERS_ADDED = '[vis] DATA_ENTRY_ACTIVATED';
 export const DATA_ENTRY_DEACTIVATED = '[vis] DATA_ENTRY_DEACTIVATED';
 
-// action creatores
 export const VisualizationActions = {
-    dataEntryActivated: (value: string) => RxSV.createAction(DATA_ENTRY_ACTIVATED, value),
-    dataEntryDeactivated: (value: string) => RxSV.createAction(DATA_ENTRY_DEACTIVATED, value),
+    dataEntryActivated: (value: string) => .createAction(DATA_ENTRY_ACTIVATED, value),
+    dataEntryDeactivated: (value: string) => createAction(DATA_ENTRY_DEACTIVATED, value),
 };
 
-export type VisualizationActions = RxSV.ActionsUnion<typeof VisualizationActions>;
+export type VisualizationActions = ActionsUnion<typeof VisualizationActions>;
 
-// reducer
+// reducers.ts
+import { Reducer } from 'rxsv';
+import { AppAction } from '@rootStore'
+
 const visState = {
     name: 'initial',
 };
 
-export type VisState = typeof visState;
+type VisState = typeof visState;
 
-export const visReducer: RxSV.Reducer<AppAction, VisState> = (state = visState, action) => {
+export const visReducer: Reducer<AppAction, VisState> = (state = visState, action) => {
     switch (action.type) {
         case DATA_ENTRY_ACTIVATED:
         case DATA_ENTRY_DEACTIVATED:
@@ -56,9 +53,27 @@ export const visReducer: RxSV.Reducer<AppAction, VisState> = (state = visState, 
     }
 };
 
-///////////////// some module B
+// effects.ts
+import { ofType } from 'rxsv';
+import { AppEffect } from '@/rootStore'
 
-// actions
+const visEffect: AppEffect = (action$, state$) =>
+    action$.pipe(
+        ofType(DATA_ENTRY_ACTIVATED),
+        debounceTime(1000),
+        withLatestFrom(state$), // you could access state in a effects like this
+        map(([action, state]) => {
+            const value = someSelectorFromReselect(state);
+
+            return VisualizationActions.dataEntryDeactivated(value);
+        }),
+    );
+
+///////////////// users module
+
+// actions.ts
+import { createAction, ActionsUnion } from 'rxsv';
+
 const USER_CHANGED = '[user] changed';
 
 const UserActions = {
@@ -67,58 +82,97 @@ const UserActions = {
 
 export type UserActions = ActionsUnion<typeof UserActions>;
 
-// reducer
+// reducers.ts
+import { Reducer } from 'rxsv';
+import { AppAction } from '@rootStore'
+
 const initialUserState = {
-    namek: '',
+    sth: '',
 };
 
-export type UserState = typeof initialUserState;
+type UserState = typeof initialUserState;
 
 export const userReducer: Reducer<AppAction, UserState> = (state = initialUserState, action) => {
     switch (action.type) {
         case USER_CHANGED:
             return {
                 ...state,
-                namek: 'hardcoded',
+                sth: 'hardcoded',
             };
         default:
             return state;
     }
 };
 
-///////////////// root
+// effects.ts
+import { ofType } from 'rxsv';
+import { AppEffect } from '@/rootStore'
 
-// combined reducers
-const rootReducer = combineReducers({
-    users: userReducer,
-    vis: visReducer,
-});
+const userChangedEffectEffect: AppEffect = action$ =>
+    action$.pipe(
+        ofType(USER_CHANGED),
+        debounceTime(1000),
+        mapTo(VisualizationActions.dataEntryActivated('turn on!')),
+    );
 
-// root types
+///////////////// rootState.ts
+import { Store, Effect, combineReducers, combineEffects } from 'rxsv';
+import { VisActions } from '@/modules/visualization/store'
+import { UserActions } from '@/modules/users/store'
+
+const rootReducer = combineReducers({ users: userReducer, vis: visReducer });
+const rootEffect = combineEffects(visEffect, userChangedEffectEffect);
+
+export const rxStore = createStore(rootReducer, rootEffectFactory);
+
+export type AppAction = VisActions | UserActions
 export type AppState = ReturnType<typeof rootReducer>;
 export type AppEffect = Effect<AppAction, AppState>;
+export type AppStore = Store<AppAction, AppState>;
 
-// combined effects/epics (iin real app they should be imported from modules)
-const rootEffectFactory = (): AppEffect => {
-    const activatedEffect: AppEffect = (action$, state$) =>
-        action$.pipe(
-            filter(({ type }) => type === DATA_ENTRY_ACTIVATED),
-            debounceTime(1000),
-            withLatestFrom(state$), // you could access state in a effect like this
-            map(([_, state]) => VisualizationActions.dataEntryDeactivated(`turn off!`)),
-        );
+///////////////// main.ts
+import VueRx from 'vue-rx';
+import { rxStore } from '@/rootStore'
 
-    const deactivatedEffect: AppEffect = action$ =>
-        action$.pipe(
-            filter(({ type }) => type === DATA_ENTRY_DEACTIVATED),
-            debounceTime(1000),
-            mapTo(VisualizationActions.dataEntryActivated('turn on!')),
-        );
+Vue.use(VueRx);
 
-    return combineEffects(activatedEffect, deactivatedEffect);
-};
+// you can set store as a global property for less boilerplate,
+// (remember about adding appropriate typings that are extending Vue namespace)
+// However such setup doesn't work in the embeddable applications
+// and might not be that clear
+Vue.prototype.$rxStore = rxStore
+```
 
-export const rxStore = createStore(rootReducer, rootEffectFactory());
+### Connecting to the App:
+
+If you don't want global property, the store could be initialized in vue's `Provide` and injected to the components through `Inject`
+
+```vue
+<template>
+    <div id="App">
+        App
+    </div>
+</template>
+
+<script lang="ts">
+import { Component, Vue, Prop, Provide } from 'vue-property-decorator';
+import { Observables } from 'vue-rx';
+import * as RxSV from 'rxsv';
+
+import { rootReducer, rootEffect, AppStore } from '@/rootStore';
+
+@Component
+export default class App extends Vue {
+    @Provide('rxstore')
+    private get rxStore(): AppStore {
+        const store = RxSV.createStore(rootReducer, rootEffect);
+
+        this.$subscribeTo(store.action$, logAction);
+
+        return store;
+    }
+}
+</script>
 ```
 
 #### Usage in Vue components:
@@ -139,13 +193,14 @@ Thanks to the `vue-rx` observables will be unpacked so their values could used w
 
 <script lang="ts">
 import { Component, Vue,  Inject } from 'vue-property-decorator';
-import { map, pluck, distinctUntilChanged } from 'rxjs/operators';
+import { select, Store } from 'rxsv';
+import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { Observables } from 'vue-rx';
 
 import SomeOtherComponent from './SomeOtherComponent.vue';
-import { VisualizationActions, AppState, AppAction } from '@/main';
-import { select, Mapper, Store } from '@/config/rxs';
+import { VisualizationActions } from '@/modules/visualization/store';
+import { AppStore } from '@/rootStore'
 
 @Component<Home>({
     components: {
@@ -155,13 +210,16 @@ import { select, Mapper, Store } from '@/config/rxs';
         const { state$ } = this.rxStore;
 
         return {
-            name$: state$.pipe(select('vis', 'name')),
-            isInital$: state$.pipe(select(({ users: { namek } }) => namek === 'initial')),
+            name$: state$.pipe(select(visualizationNameSelector),
+            isInital$: state$.pipe(
+                select(usersSelector),
+                map(el => el.length > 0)
+            ),
         };
     },
 })
 export default class Home extends Vue {
-    @Inject() public readonly rxStore!: Store<AppAction, AppState>;
+    @Inject('store') public readonly rxStore!: AppStore
 
     private onClick(): void {
         this.rxStore.action$.next(VisualizationActions.dataEntryActivated('clicked'));
@@ -169,7 +227,3 @@ export default class Home extends Vue {
 }
 </script>
 ```
-
-### Todo:
-
--   tests
