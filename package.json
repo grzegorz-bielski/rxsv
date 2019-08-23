@@ -1,21 +1,24 @@
 {
     "name": "rxsv",
-    "version": "0.0.10",
-    "description": "",
-    "main": "dist/index.js",
-    "types": "dist/index.d.ts",
+    "version": "0.0.11",
+    "description": "RxJS based state management for Vue",
+    "author": "Grzegorz Bielski <pesiok@gmail.com>",
+    "main": "dist/lib/index.js",
+    "module": "dist/esm/index.js",
+    "types": "dist/lib/index.d.ts",
+    "sideEffects": false,
     "scripts": {
-        "build": "webpack --mode=production",
+        "build": "npm run clean && tsc -p tsconfig.lib.json && tsc -p tsconfig.esm.json",
         "prepare": "npm run build",
         "test": "jest",
         "test:watch": "jest --watch",
+        "clean": "rimraf dist/*",
         "serve:cov": "http-server ./coverage/lcov-report"
     },
-    "author": "",
     "files": [
         "dist/**/*"
     ],
-    "license": "ISC",
+    "license": "MIT",
     "dependencies": {
         "rxjs": "^6.5.2"
     },
@@ -25,6 +28,7 @@
         "http-server": "^0.11.1",
         "jest": "^24.8.0",
         "prettier": "^1.17.1",
+        "rimraf": "^3.0.0",
         "ts-jest": "^24.0.2",
         "ts-loader": "^6.0.2",
         "tslint": "^5.17.0",

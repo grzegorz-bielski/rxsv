@@ -2,31 +2,22 @@
     "compilerOptions": {
         "baseUrl": "src",
         "outDir": "./dist",
-        "target": "esnext",
+        "target": "es5",
         "module": "commonjs",
         "declaration": true,
         "strict": true,
-        "jsx": "preserve",
         "importHelpers": true,
         "skipLibCheck": true,
         "moduleResolution": "node",
-        "experimentalDecorators": true,
         "esModuleInterop": true,
-        "noImplicitAny": true,
-        "strictNullChecks": true,
         "noImplicitReturns": true,
-        "noImplicitThis": true,
-        "alwaysStrict": true,
-        "strictBindCallApply": true,
-        "strictFunctionTypes": true,
-        "strictPropertyInitialization": true,
         "allowSyntheticDefaultImports": true,
         "sourceMap": true,
         "types": ["jest"],
         "paths": {
             "@/*": ["src/*"]
         },
-        "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
+        "lib": ["esnext", "dom"]
     },
     "include": ["src/**/*.ts", "tests/**/*.ts", "tests/**/*.tsx"]
 }
