@@ -1,4 +1,4 @@
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 
 type AnyFunction = (...args: any[]) => any;
 interface AnyFunctionMap {
@@ -16,6 +16,7 @@ export type Reducer<A, S> = (state: S | undefined, action: A) => S;
 export interface Store<A, S> {
     readonly action$: BehaviorSubject<A>;
     readonly state$: Observable<S>;
+    readonly effect$: Subject<Effect<A, S>>;
 }
 
 export type InferActionType<Union, Type extends string> = Union extends Action<Type>
