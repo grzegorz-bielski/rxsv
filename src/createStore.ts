@@ -16,22 +16,23 @@ export function createStore<A extends Action, S>(
             (prevState, action) => rootReducer(prevState, action),
             rootReducer(void 0, createAction('@@INIT/state') as A),
         ),
-        shareReplay(),
+        shareReplay(1),
     );
 
+    // setup effects pipeline
+    const effect$ = new Subject<Effect<A, S>>();
+
+    effect$
+        .pipe(mergeMap(effect => effect(action$, state$)))
+        .subscribe(action => action$.next(action));
+
     if (rootEffect) {
-        // setup effects pipeline
-        const effect$ = new Subject<Effect<A, S>>();
-
-        effect$
-            .pipe(mergeMap(effect => effect(action$, state$)))
-            .subscribe(action => action$.next(action));
-
         effect$.next(rootEffect);
     }
 
     return {
         action$,
         state$,
+        effect$,
     };
 }
