@@ -1,21 +1,20 @@
 import { OperatorFunction, Observable } from 'rxjs';
 import { map, pluck, distinctUntilChanged, filter } from 'rxjs/operators';
 
-import { Action, InferActionType } from './types';
+import { Action, InferActionType, Placeholder } from './types';
 
 type Mapper<A, B> = (a: A) => B;
+const isMapper = <A, B>(a: Mapper<A, B> | string): a is Mapper<A, B> => typeof a === 'function';
 
 export function select<A, B>(
     pathOrMapper: Mapper<A, B> | string,
-    ...paths: string[]
+    ...paths: readonly string[]
 ): OperatorFunction<A, B> {
-    const haveMapperFunc = typeof pathOrMapper === 'function';
-
     return source$ =>
         source$.pipe(
-            haveMapperFunc
-                ? map(source => (pathOrMapper as Mapper<A, B>)(source))
-                : pluck<A, B>(...[pathOrMapper as string, ...paths]),
+            isMapper(pathOrMapper)
+                ? map(source => pathOrMapper(source))
+                : pluck<A, B>(...[pathOrMapper, ...paths]),
             distinctUntilChanged(),
         );
 }
@@ -44,11 +43,10 @@ export function ofType<
 >(a0: A0, a1: A1, a2: A2, a3: A3): OperatorFunction<T, InferActionType<T, A0 | A1 | A2 | A3>>;
 
 export function ofType<T extends Action, A extends string>(
-    ...aN: any[]
+    ...aN: readonly Placeholder[]
 ): OperatorFunction<T, InferActionType<T, T['type']>>;
 
-// tslint:disable:typedef
-export function ofType(...keys: string[]) {
+export function ofType(...keys: readonly string[]) {
     return (source: Observable<Action>) =>
         source.pipe(filter(action => keys.includes(action.type)));
 }

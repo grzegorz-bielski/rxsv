@@ -5,6 +5,6 @@ export function createAction<T extends string, P>(type: T, payload: P): Action<T
 export function createAction<T extends string, P>(
     type: T,
     payload?: P,
-): Readonly<{ type: T }> | Readonly<{ type: T; payload: P }> {
+): Readonly<{ type: T } | { type: T; payload: P }> {
     return payload === void 0 ? { type } : { type, payload };
 }

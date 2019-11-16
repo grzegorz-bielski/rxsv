@@ -3,6 +3,8 @@ import { Observable, of } from 'rxjs';
 import { Reducer } from '../types';
 import { combineReducers, combineEffects } from '../combiners';
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 describe('combiners', () => {
     const action = { type: 'NOOP' };
 
@@ -37,6 +39,7 @@ describe('combiners', () => {
             const init = { sth: 'kek', kek: false };
             const nonPureReducer: Reducer<typeof action, typeof init> = (state = init, _action) => {
                 if (action.type === 'MUTATION') {
+                    // eslint-disable-next-line functional/immutable-data
                     state.kek = true;
                 }
 
