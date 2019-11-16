@@ -1,6 +1,6 @@
 {
     "name": "@rxsv/core",
-    "version": "0.0.2-test.0",
+    "version": "0.0.3-test.0",
     "sideEffects": false,
     "description": "RxJS based state management library - core",
     "keywords": [
@@ -24,7 +24,7 @@
         "./dist/**/*"
     ],
     "publishConfig": {
-        "registry": "https://registry.yarnpkg.com"
+        "access": "public"
     },
     "repository": {
         "type": "git",
@@ -41,5 +41,5 @@
     "bugs": {
         "url": "https://github.com/grzegorz-bielski/rxsv/issues"
     },
-    "gitHead": "bcce128446ba4bb9f17ba4f311dc5988dd044800"
+    "gitHead": "407607abe25b8a3d96b419ebd56f7683e5e60ada"
 }
