@@ -1,8 +1,11 @@
 ## rxsv
 
+[![Actions Status](https://github.com/{owner}/{repo}/workflows/{workflow_name}/badge.svg)](https://github.com/{owner}/{repo}/actions)
+[![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://lerna.js.org/)
+
 Minimal state management library based on `RxJS` heavily inspired by `Redux` and `Redux-Observable` with `rex-tils`
 
-It's main characteristic is smooth integration with `Vue.js` using `vue-rx` and small boilerplate.
+It's main characteristic is smooth integration with `Vue.js` using `vue-rx` but it's framework agnostic.
 
 ### Installation:
 

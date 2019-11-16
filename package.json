@@ -1,25 +1,20 @@
 {
     "name": "rxsv",
     "version": "0.0.11",
-    "description": "RxJS based state management for Vue",
+    "description": "RxJS based state management library",
     "author": "Grzegorz Bielski <pesiok@gmail.com>",
-    "main": "dist/lib/index.js",
-    "module": "dist/esm/index.js",
-    "types": "dist/lib/index.d.ts",
-    "sideEffects": false,
-    "scripts": {
-        "build": "npm run clean && tsc -p tsconfig.lib.json && tsc -p tsconfig.esm.json",
-        "prepare": "npm run build",
-        "test": "jest",
-        "test:watch": "jest --watch",
-        "clean": "rimraf dist/*",
-        "serve:cov": "http-server ./coverage/lcov-report"
-    },
-    "files": [
-        "dist/**/*"
+    "private": true,
+    "workspaces": [
+        "packages/*"
     ],
+    "scripts": {
+        "bootstrap": "lerna bootstrap",
+        "start": "lerna run start --stream",
+        "build": "lerna run build --stream",
+        "watch": "lerna run watch --parallel",
+        "test": "lerna run test --stream"
+    },
     "license": "MIT",
-    "dependencies": {},
     "peerDependencies": {
         "rxjs": "^6.5.3"
     },
@@ -35,6 +30,7 @@
         "fork-ts-checker-webpack-plugin": "^1.6.0",
         "http-server": "^0.11.1",
         "jest": "^24.9.0",
+        "lerna": "^3.18.4",
         "prettier": "^1.19.1",
         "rimraf": "^3.0.0",
         "rxjs": "^6.5.3",

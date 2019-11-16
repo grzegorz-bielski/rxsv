@@ -1,0 +1,44 @@
+{
+    "name": "@rxsv/core",
+    "version": "0.0.11",
+    "sideEffects": false,
+    "description": "RxJS based state management library - core",
+    "keywords": [
+        "rxjs",
+        "state",
+        "vue",
+        "react",
+        "observable"
+    ],
+    "author": "Grzegorz Bielski <pesiok@gmail.com>",
+    "homepage": "https://github.com/grzegorz-bielski/rxsv#readme",
+    "license": "MIT",
+    "main": "./dist/lib/index.js",
+    "module": "./dist/esm/index.js",
+    "types": "./dist/lib/index.d.ts",
+    "directories": {
+        "lib": "lib",
+        "test": "tests"
+    },
+    "files": [
+        "./dist/**/*"
+    ],
+    "publishConfig": {
+        "registry": "https://registry.yarnpkg.com"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/grzegorz-bielski/rxsv.git"
+    },
+    "scripts": {
+        "build": "npm run clean && tsc -p tsconfig.lib.json && tsc -p tsconfig.esm.json",
+        "prepare": "npm run build",
+        "test": "jest",
+        "test:watch": "jest --watch",
+        "clean": "rimraf ./dist/*",
+        "serve:cov": "http-server ./coverage/lcov-report"
+    },
+    "bugs": {
+        "url": "https://github.com/grzegorz-bielski/rxsv/issues"
+    }
+}
