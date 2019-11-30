@@ -20,6 +20,4 @@ export type Store<A, S> = Readonly<{
     effect$: Subject<Effect<A, S>>;
 }>;
 
-export type InferActionType<Union, Type extends string> = Union extends Action<Type>
-    ? Union
-    : never;
+export type InferActionType<Union, Type extends string> = Union extends Action<Type> ? Union : never;
