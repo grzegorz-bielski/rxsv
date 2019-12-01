@@ -1,5 +1,4 @@
 export * from './types';
-export * from './createAction';
-export * from './createStore';
+export * from './creators';
 export * from './combiners';
 export * from './operators';

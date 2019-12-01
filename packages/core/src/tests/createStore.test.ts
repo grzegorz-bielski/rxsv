@@ -2,7 +2,7 @@ import { Observable, Subject } from 'rxjs';
 import { ignoreElements, mapTo } from 'rxjs/operators';
 import { TestScheduler } from 'rxjs/testing';
 
-import { createStore } from '../createStore';
+import { createStore } from '../creators/createStore';
 import { Reducer, Effect, Action } from '../types';
 import { ofType } from '../operators';
 

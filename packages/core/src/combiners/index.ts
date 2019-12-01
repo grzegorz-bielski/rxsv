@@ -1,6 +1,6 @@
 import { merge } from 'rxjs';
 
-import { Action, Reducer, Effect, Placeholder } from './types';
+import { Action, Reducer, Effect, Placeholder } from '../types';
 
 type Reducers<A extends Action, S> = { [K in keyof S]: Reducer<A, S[K]> };
 type InferAction<R> = R extends Reducer<infer A, Placeholder> ? A : never;

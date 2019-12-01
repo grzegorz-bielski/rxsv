@@ -7,6 +7,7 @@ module.exports = {
         'plugin:prettier/recommended',
     ],
     rules: {
+        '@typescript-eslint/no-use-before-define': 'off',
         'functional/functional-parameters': 'off',
         'functional/no-expression-statement': 'off',
         'functional/prefer-type-literal': 'off',

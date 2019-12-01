@@ -1,6 +1,6 @@
 import { Observable, of } from 'rxjs';
 
-import { Reducer } from '../types';
+import { Reducer, witness } from '../types';
 import { combineReducers, combineEffects } from '../combiners';
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -24,7 +24,7 @@ describe('combiners', () => {
         });
 
         it('should initialize all combined reducers', () => {
-            const initState = combineReducers(reducersMap)(void 0, action);
+            const initState = combineReducers(reducersMap)(witness<typeof reducersMap>(), action);
 
             expect(initState).toEqual({
                 sth: { sth: 'kek' },
@@ -57,7 +57,14 @@ describe('combiners', () => {
                 sth: nonPureReducer,
             });
 
-            const initState = combined(void 0, action);
+            type InitState = {
+                sth: {
+                    sth: string;
+                    kek: boolean;
+                };
+            };
+
+            const initState = combined(witness<InitState>(), action);
             const mutState = combined(initState, mutAction);
             const pureState = combined(initState, pureAction);
 

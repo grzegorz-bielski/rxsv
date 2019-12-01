@@ -1,7 +1,7 @@
 import { OperatorFunction, Observable } from 'rxjs';
 import { map, pluck, distinctUntilChanged, filter } from 'rxjs/operators';
 
-import { Action, InferActionType, Placeholder } from './types';
+import { Action, InferActionType, Placeholder } from '../types';
 
 type Mapper<A, B> = (a: A) => B;
 const isMapper = <A, B>(a: Mapper<A, B> | string): a is Mapper<A, B> => typeof a === 'function';
