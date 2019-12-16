@@ -1,4 +1,4 @@
-import { Placeholder } from '../../types';
+import { Placeholder, ExcludeArrayKeys } from '../../types';
 import { CreatorList } from './creatorList';
 
 /**
@@ -7,11 +7,6 @@ import { CreatorList } from './creatorList';
 export type InferActionFromList<C extends CreatorList> = InferActionFromCreatorList<
     Pick<C, ExcludeArrayKeys<C>>
 >;
-
-/**
- * ExcludeArrayKeys excludes native array keys from the tuple
- */
-type ExcludeArrayKeys<T> = Exclude<keyof T, keyof unknown[]>;
 
 type InferActionFromCreatorList<
     T extends { readonly [key: string]: (...args: readonly Placeholder[]) => Placeholder }

@@ -15,7 +15,7 @@ type CPayload<C extends CreatorList, T> = DiscriminateAction<C, T>['payload'];
 type CType<C extends CreatorList, T> = DiscriminateAction<C, T>['type'];
 
 /**
- * DiscriminateAction infers action based on discriminated on `T` based on action type
+ * DiscriminateAction infers action based on discriminated on `T`  action type
  */
 type DiscriminateAction<C extends CreatorList, T> = DiscriminateUnion<
     InferActionFromList<C>,

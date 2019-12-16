@@ -1,7 +1,7 @@
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 
-type AnyFunction = (...args: readonly Placeholder[]) => Placeholder;
-type AnyFunctionMap = { readonly [key: string]: AnyFunction };
+export type AnyFunction = (...args: readonly Placeholder[]) => Placeholder;
+export type AnyFunctionMap = { readonly [key: string]: AnyFunction };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Placeholder = any;
@@ -56,6 +56,16 @@ export type AnyPair = Pair<Placeholder, Placeholder>;
 export type DiscriminateUnion<U, K extends keyof U, V extends U[K]> = U extends Record<K, V>
     ? U
     : never;
+
+/**
+ * ExcludeArrayKeys excludes native array keys from the tuple
+ */
+export type ExcludeArrayKeys<T> = Exclude<keyof T, keyof unknown[]>;
+
+/**
+ * FromArray creates a n length tuple from every array key
+ */
+export type FromArray<T> = { [P in keyof T]: T[P] };
 
 /**
  * witness is a type assertion function

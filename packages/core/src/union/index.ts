@@ -6,13 +6,12 @@ import { ActionCreators } from './types/actionCreators';
  * union creates an algebraic data type out of provided cases using `caseOf`.
  * 
  * ```typescript
- * const todos = union(
+ * const Actions = createUnion(
     caseOf('ADD_TODO')<{ id: string; text: string }>(),
     caseOf('SET_VISIBILITY_FILTER')(),
-    caseOf('REMOVE_TODO')<{ id: string }>(),
    );
 
-   type TodosActions = ActionsUnion<typeof todos>;
+   type Actions = ActionsUnion<typeof Actions>;
  * ```
  */
 export function createUnion<T extends AnyPair[]>(...values: T): ActionCreators<T> {
@@ -28,7 +27,6 @@ export function createUnion<T extends AnyPair[]>(...values: T): ActionCreators<T
 /**
  *  caseOf creates subtype for action union
  */
-
 export function caseOf<T extends string>(actionType: T): <P = void>() => Pair<T, P> {
     return <P>() => [actionType, witness<P>()];
 }

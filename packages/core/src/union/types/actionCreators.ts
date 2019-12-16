@@ -1,6 +1,7 @@
 import { CreatorList } from './creatorList';
 import { InferActionFromList } from './actionFromList';
 import { ActionCreator } from './actionCreator';
+import { FromArray } from '../../types';
 
 /**
  * ActionCreators is constructing a record with action creatores from given pair list
@@ -13,8 +14,3 @@ export type ActionCreators<C extends unknown[]> = Creators<CreatorList<FromArray
 type Creators<C extends CreatorList> = {
     [T in InferActionFromList<C>['type']]: ActionCreator<C, T>;
 };
-
-/**
- * FromArray creates a n length tuple from every array key
- */
-type FromArray<T> = { [P in keyof T]: T[P] };
