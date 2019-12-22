@@ -1,6 +1,6 @@
 {
     "name": "@rxsv/core",
-    "version": "0.0.4-test.0",
+    "version": "0.0.5-test.0",
     "sideEffects": false,
     "description": "RxJS based state management library - core",
     "keywords": [
@@ -38,5 +38,5 @@
     "bugs": {
         "url": "https://github.com/grzegorz-bielski/rxsv/issues"
     },
-    "gitHead": "407607abe25b8a3d96b419ebd56f7683e5e60ada"
+    "gitHead": "335cda7dcdac8ef3a67abcfa4ed1acc43fbe2649"
 }
