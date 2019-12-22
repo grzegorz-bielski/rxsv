@@ -5,7 +5,7 @@
     "author": "Grzegorz Bielski <pesiok@gmail.com>",
     "homepage": "https://github.com/grzegorz-bielski/rxsv#readme",
     "license": "MIT",
-    "main": "lib/demo.js",
+    "main": "src/index.js",
     "files": [
         "lib"
     ],
@@ -14,9 +14,18 @@
         "url": "git+https://github.com/grzegorz-bielski/rxsv.git"
     },
     "scripts": {
-        "test": "echo \"Error: run tests from root\" && exit 1"
+        "test": "echo \"Error: run tests from root\" && exit 1",
+        "watch": "tsc -w"
     },
     "bugs": {
         "url": "https://github.com/grzegorz-bielski/rxsv/issues"
+    },
+    "references": [
+        {
+            "path": "../core/tsconfig.esm.json"
+        }
+    ],
+    "dependencies": {
+        "@rxsv/core": "^0.0.4-test.0"
     }
 }

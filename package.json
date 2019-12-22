@@ -8,6 +8,7 @@
         "packages/*"
     ],
     "scripts": {
+        "lerna": "lerna",
         "bootstrap": "lerna bootstrap",
         "start": "lerna run start --stream",
         "build": "lerna run build --stream",

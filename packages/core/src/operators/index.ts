@@ -29,7 +29,7 @@ export function select<A, B>(
 /**
  * ofType will take actions of provided type for the stream
  * If you are using `createActionUnion` or taking more than 3 actions
- * you might consider `fromActions` instead
+ * you might consider using `fromActions` instead
  */
 export function ofType<T extends Action, A0 extends string>(
     a0: A0,
