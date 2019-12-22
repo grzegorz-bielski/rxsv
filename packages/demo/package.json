@@ -1,6 +1,6 @@
 {
     "name": "demo",
-    "version": "0.0.4-test.0",
+    "version": "0.0.5-test.0",
     "description": "> TODO: description",
     "author": "Grzegorz Bielski <pesiok@gmail.com>",
     "homepage": "https://github.com/grzegorz-bielski/rxsv#readme",
@@ -26,6 +26,6 @@
         }
     ],
     "dependencies": {
-        "@rxsv/core": "^0.0.4-test.0"
+        "@rxsv/core": "^0.0.5-test.0"
     }
 }
