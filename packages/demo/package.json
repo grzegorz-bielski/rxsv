@@ -1,7 +1,7 @@
 {
     "name": "demo",
     "private": true,
-    "version": "0.0.5-test.0",
+    "version": "0.0.6-test.0",
     "description": "> TODO: description",
     "author": "Grzegorz Bielski <pesiok@gmail.com>",
     "homepage": "https://github.com/grzegorz-bielski/rxsv#readme",
@@ -27,7 +27,7 @@
         }
     ],
     "dependencies": {
-        "@rxsv/core": "^0.0.5-test.0"
+        "@rxsv/core": "^0.0.6-test.0"
     },
     "gitHead": "335cda7dcdac8ef3a67abcfa4ed1acc43fbe2649"
 }
