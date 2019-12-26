@@ -4,5 +4,5 @@
         "packages/*"
     ],
     "useWorkspaces": true,
-    "version": "0.0.6-test.0"
+    "version": "0.0.7-test.0"
 }
