@@ -17,6 +17,9 @@ jobs:
           cmd: install
       - uses: borales/actions-yarn@v2.0.0
         with:
+          cmd: bootstrap 
+      - uses: borales/actions-yarn@v2.0.0
+        with:
           cmd: test
     env:
         CI: true
