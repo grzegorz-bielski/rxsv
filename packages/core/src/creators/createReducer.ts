@@ -9,8 +9,8 @@ export type ReducersMap = { [key: string]: Reducer<Placeholder, Placeholder> };
 export function createReducer<S>(
     defaultState: S,
 ): <U extends Action>(matching: Reducers<U, S>) => Reducer<U, S> {
-    return matching => (state, action) =>
-        (matching as ReducersMap)[action.type](state ?? defaultState, action);
+    return matching => (state, action) => {
+        const prevState = state ?? defaultState;
+        return (matching as ReducersMap)[action.type]?.(prevState, action) ?? prevState;
+    };
 }
-
-export const id = <A>(a: A): A => a;

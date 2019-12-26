@@ -30,8 +30,8 @@
         "build": "npm run clean && tsc -p tsconfig.lib.json && tsc -p tsconfig.esm.json",
         "prepublishOnly": "npm run build",
         "test": "jest",
-        "watch": "tsc -w -p tsconfig.lib.json",
         "test:watch": "jest --watch",
+        "watch": "tsc -w -p tsconfig.lib.json",
         "clean": "rimraf ./dist/* && rimraf tsconfig.build.tsbuildinfo",
         "serve:cov": "http-server ./coverage/lcov-report"
     },

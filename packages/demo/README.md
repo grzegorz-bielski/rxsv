@@ -5,7 +5,7 @@
 ## Usage
 
 ```
-const demo = require('demo');
+import demo from 'demo';
 
 // TODO: DEMONSTRATE API
 ```
