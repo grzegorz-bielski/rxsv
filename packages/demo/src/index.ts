@@ -1,5 +1,5 @@
-import { map } from 'rxjs/operators';
-import { combineLatest, Observable } from 'rxjs';
+import { ignoreElements, tap } from 'rxjs/operators';
+import { combineLatest } from 'rxjs';
 import {
     U,
     ActionsUnion,
@@ -8,36 +8,46 @@ import {
     fromActions,
     select,
     createStore,
+    Selector,
 } from '@rxsv/core';
 
 const Actions = U.createUnion(
-    U.caseOf('ADD_TODO')<{ id: string; text: string }>(),
-    U.caseOf('SET_VISIBILITY_FILTER')(),
-    U.caseOf('REMOVE_TODO')<{ id: string }>(),
+    U.caseOf('ADD_TODO')<Todo>(),
+    U.caseOf('REMOVE_TODO')<Todo['id']>(),
+    U.caseOf('UPDATE_TODO')<Todo>(),
 );
 
-type Actions = ActionsUnion<typeof Actions>;
-type State = ReturnType<typeof rootReduer>;
+type Todo = { id: string; text: string; isDone: boolean };
 
-const rootReduer = createReducer({ todos: [] as string[] })<Actions>({
-    ADD_TODO: (state, action) => ({ todos: [] }),
-    REMOVE_TODO: (state, action) => state,
-    SET_VISIBILITY_FILTER: (state, action) => state,
+type State = ReturnType<typeof reducer>;
+type Actions = ActionsUnion<typeof Actions>;
+
+const initialState: Todo[] = [];
+export const reducer = createReducer(initialState)<Actions>({
+    ADD_TODO: (state, { payload }) => [...state, payload],
+    UPDATE_TODO: (state, { payload }) =>
+        state.map(todo => (todo.id === payload.id ? payload : todo)),
+    REMOVE_TODO: (state, { payload }) => state.filter(({ id }) => id !== payload),
 });
 
-const rootEffect: Effect<Actions, State> = action$ =>
+export const effect: Effect<Actions, State> = action$ =>
     action$.pipe(
-        fromActions(Actions.ADD_TODO, Actions.SET_VISIBILITY_FILTER),
-        map(x => x),
+        fromActions(Actions.ADD_TODO),
+        tap(() => console.log('todo added')),
+        ignoreElements(),
     );
 
-const selector = (state$: Observable<State>) =>
+type ViewInfo = { todo: Todo; length: number };
+
+export const selector: Selector<State, ViewInfo[]> = state$ =>
     combineLatest(
-        state$.pipe(select(x => x.todos)),
-        state$.pipe(select(x => x.todos.length)),
-        (todos, length) => todos.map(todo => ({ todo, length })),
+        state$.pipe(select(a => a)), // take part(s) of the state
+        state$.pipe(select(a => a.length)),
+        (todos, length) => todos.map(todo => ({ todo, length })), // do your projection
     );
 
-const store = createStore(rootReduer, rootEffect);
+const store = createStore(reducer, effect);
 
-store.state$.subscribe(state => {});
+store.state$.subscribe(state => {
+    // do sth in your app
+});

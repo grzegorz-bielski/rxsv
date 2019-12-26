@@ -28,6 +28,8 @@ export type Effect<A, S> = (action$: Observable<A>, state: Observable<S>) => Obs
  */
 export type Reducer<A, S> = (state: S, action: A) => S;
 
+export type Selector<S, R> = (state$: Observable<S>) => Observable<R>;
+
 /**
  * Store represents an instance of related application logic
  */
