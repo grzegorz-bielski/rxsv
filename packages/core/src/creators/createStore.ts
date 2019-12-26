@@ -2,7 +2,7 @@ import { scan, mergeMap, shareReplay } from 'rxjs/operators';
 import { BehaviorSubject, Subject } from 'rxjs';
 
 import { createAction } from './createAction';
-import { Action, Reducer, Store, Effect } from './types';
+import { Action, Reducer, Store, Effect, witness } from '../types';
 
 export function createStore<A extends Action, S>(
     rootReducer: Reducer<A, S>,
@@ -14,7 +14,7 @@ export function createStore<A extends Action, S>(
     const state$ = action$.pipe(
         scan(
             (prevState, action) => rootReducer(prevState, action),
-            rootReducer(void 0, createAction('@@INIT/state') as A),
+            rootReducer(witness<S>(), createAction('@@INIT/state') as A),
         ),
         shareReplay(1),
     );

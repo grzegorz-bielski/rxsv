@@ -2,9 +2,11 @@ import { Observable, Subject } from 'rxjs';
 import { ignoreElements, mapTo } from 'rxjs/operators';
 import { TestScheduler } from 'rxjs/testing';
 
-import { createStore } from '../createStore';
+import { createStore } from '../creators/createStore';
 import { Reducer, Effect, Action } from '../types';
 import { ofType } from '../operators';
+
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
 const initialState = { init: true };
 type MockState = typeof initialState;
@@ -53,7 +55,7 @@ describe('createStore', () => {
     });
 
     describe('reducers', () => {
-        // tslint:disable-next-line:no-let
+        // eslint-disable-next-line functional/no-let
         let reducerMock: jest.Mock;
 
         beforeEach(() => {
@@ -110,10 +112,7 @@ describe('createStore', () => {
         it('should send actions back to the action$ stream', () => {
             const someOtherAction = { type: 'Other' };
             const someEffect: Effect<Action, {}> = action$ =>
-                action$.pipe(
-                    ofType(someOtherAction.type),
-                    mapTo(someAction),
-                );
+                action$.pipe(ofType(someOtherAction.type), mapTo(someAction));
             const reducerMock = jest.fn((state = initialState, _action) => state);
 
             const store = createStore(reducerMock, someEffect);

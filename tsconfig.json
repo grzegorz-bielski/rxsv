@@ -1,9 +1,7 @@
 {
     "compilerOptions": {
-        "baseUrl": "src",
-        "outDir": "./dist",
-        "target": "es5",
-        "module": "commonjs",
+        "target": "ES2018",
+        "module": "esnext",
         "declaration": true,
         "strict": true,
         "importHelpers": true,
@@ -14,10 +12,7 @@
         "allowSyntheticDefaultImports": true,
         "sourceMap": true,
         "types": ["jest"],
-        "paths": {
-            "@/*": ["src/*"]
-        },
         "lib": ["esnext", "dom"]
     },
-    "include": ["src/**/*.ts", "tests/**/*.ts", "tests/**/*.tsx"]
+    "include": ["@types/**/*", "packages/**/*"]
 }

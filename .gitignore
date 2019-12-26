@@ -1,4 +1,11 @@
 node_modules
-dist
-/coverage
+/packages/*/dist
+coverage
+
+.idea
 .vscode
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*

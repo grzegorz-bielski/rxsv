@@ -1,0 +1,34 @@
+{
+    "name": "demo",
+    "version": "0.0.7-test.0",
+    "private": true,
+    "description": "> TODO: description",
+    "author": "Grzegorz Bielski <pesiok@gmail.com>",
+    "homepage": "https://github.com/grzegorz-bielski/rxsv#readme",
+    "license": "MIT",
+    "main": "dist/index.js",
+    "directories": {
+        "lib": "dist",
+        "test": "__tests__"
+    },
+    "files": [
+        "dist"
+    ],
+    "publishConfig": {
+        "registry": "https://registry.yarnpkg.com"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/grzegorz-bielski/rxsv.git"
+    },
+    "scripts": {
+        "test": "echo \"Error: run tests from root\" && exit 0",
+        "watch": "tsc -w"
+    },
+    "bugs": {
+        "url": "https://github.com/grzegorz-bielski/rxsv/issues"
+    },
+    "dependencies": {
+        "@rxsv/core": "^0.0.7-test.0"
+    }
+}

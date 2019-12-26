@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const path = require('path');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
+// eslint-disable-next-line functional/immutable-data
 module.exports = {
     entry: './src/index.ts',
     output: {
@@ -15,9 +17,9 @@ module.exports = {
         rules: [
             {
                 test: /\.tsx?$/,
-                enforce: 'pre',
-                loader: 'tslint-loader',
                 exclude: /node_modules/,
+                enforce: 'pre',
+                loader: 'eslint-loader',
             },
             {
                 test: /\.tsx?$/,

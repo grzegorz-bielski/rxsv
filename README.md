@@ -1,80 +1,90 @@
 ## rxsv
 
-Minimal state management library based on `RxJS` heavily inspired by `Redux` and `Redux-Observable` with `rex-tils`
+[![Actions Status](https://github.com/{owner}/{repo}/workflows/{workflow_name}/badge.svg)](https://github.com/{owner}/{repo}/actions)
+[![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://lerna.js.org/)
 
-It's main characteristic is smooth integration with `Vue.js` using `vue-rx` and small boilerplate.
+Framework agnostic minimal state management library based on `RxJS`, heavily inspired by `Redux` and `Redux-Observable` with limited boilerplate and TypeScript first approach.
+
+Although the library is framework agnostic and it can be used with any framework, it provides especially smooth integration with `Vue.js` using `vue-rx`.
+It has been battle tested in few small to medium projects currently running on production.
 
 ### Installation:
 
 ```bash
-npm install rxjs
-npm install vue-rx
-## the package is not yet available on the public npm
-npm install --registry npm.hal.skygate.io rxsv
+npm install rxjs @rxsv/core
+npm install vue-rx # only if you are using vue
 ```
 
-### Example:
+### Vue Example:
 
 ```typescript
-///////////////// visualization module
-import { ActionsUnion, createAction } from 'rxsv';
+///////////////// todo module
 
-// actions.ts
-export const USERS_ADDED = '[vis] DATA_ENTRY_ACTIVATED';
-export const DATA_ENTRY_DEACTIVATED = '[vis] DATA_ENTRY_DEACTIVATED';
+// todoState.ts
 
-export const VisualizationActions = {
-    dataEntryActivated: (value: string) => .createAction(DATA_ENTRY_ACTIVATED, value),
-    dataEntryDeactivated: (value: string) => createAction(DATA_ENTRY_DEACTIVATED, value),
-};
+import {
+    U,
+    ActionsUnion,
+    createReducer,
+    Effect,
+    fromActions,
+    select,
+    createStore,
+} from '@rxsv/core';
 
-export type VisualizationActions = ActionsUnion<typeof VisualizationActions>;
+type Todo = { id: string; text: string; isDone: boolean };
 
-// reducers.ts
-import { Reducer } from 'rxsv';
-import { AppAction } from '@rootStore'
+// create type-safe actions and action creators in one go using `U`
+export const Actions = U.createUnion(
+    U.caseOf('ADD_TODO')<Todo>(),
+    U.caseOf('REMOVE_TODO')<Todo['id']>(),
+    U.caseOf('UPDATE_TODO')<Todo>(),
+);
 
-const visState = {
-    name: 'initial',
-};
+// infer union type of all actions from `U`
+type Actions = ActionsUnion<typeof Actions>;
 
-type VisState = typeof visState;
+// create reducer function using `createReducer` and infered action union type
+// `createReducer` will force you to cover all cases, if you don't want this behaviour consider using simple switch
+export const todosReducer = createReducer([] as Todo[])<Actions>({
+    ADD_TODO: (state, { payload }) => [...state, payload],
+    UPDATE_TODO: (state, { payload }) =>
+        state.map(todo => (todo.id === payload.id ? payload : todo)),
+    REMOVE_TODO: (state, { payload }) => state.filter(({ id }) => id !== payload),
+});
 
-export const visReducer: Reducer<AppAction, VisState> = (state = visState, action) => {
-    switch (action.type) {
-        case DATA_ENTRY_ACTIVATED:
-        case DATA_ENTRY_DEACTIVATED:
-            return {
-                ...state,
-                name: action.payload,
-            };
-        default:
-            return state;
-    }
-};
+// infer state type from the reducer
+type State = ReturnType<typeof reducer>;
 
-// effects.ts
-import { ofType } from 'rxsv';
-import { AppEffect } from '@/rootStore'
-
-const visEffect: AppEffect = (action$, state$) =>
+// handle side effects using rxjs based sagas.
+// The same concept and almost the same (there is no support for DI in rxsv's effects) API as in `https://redux-observable.js.org/`
+export const todosEffect: Effect<Actions, State> = (action$, state$) =>
     action$.pipe(
-        ofType(DATA_ENTRY_ACTIVATED),
-        debounceTime(1000),
+        fromActions(Actions.ADD_TODO),  // fromActions works only with `U`. It will infer the action type from `U` of arbitrary length
         withLatestFrom(state$), // you could access state in a effects like this
-        map(([action, state]) => {
-            const value = someSelectorFromReselect(state);
-
-            return VisualizationActions.dataEntryDeactivated(value);
-        }),
+        tap(([action, state]) => console.log('todo added'))),
     );
+
+// You can use `reselect` but in most cases you won't need selector library, rxjs is more than enough
+// use `select` which has built in memoization, or use `distinctUntilChanged` operator directly
+export const todosSelector = (state$: Observable<State>) =>
+  combineLatest(
+    state$.pipe(select(a => a)), // take part(s) of the state
+    state$.pipe(select(a => a.length)),
+    (todos, length) => todos.map(todo => ({ todo, length })) // do your projection
+  );
+
 
 ///////////////// users module
 
-// actions.ts
-import { createAction, ActionsUnion } from 'rxsv';
+// usersState.ts
 
-const USER_CHANGED = '[user] changed';
+// In most cases you'd want to use `U` and `createReducer`.
+// But there are situations when having simple record with `createAction` and switch based reducer is helpful
+
+import { createAction, ActionsUnion } from '@rxsv/core';
+
+const USER_CHANGED = 'USER_CHANGED';
 
 const UserActions = {
     userChanged: () => createAction(USER_CHANGED),
@@ -82,9 +92,8 @@ const UserActions = {
 
 export type UserActions = ActionsUnion<typeof UserActions>;
 
-// reducers.ts
-import { Reducer } from 'rxsv';
-import { AppAction } from '@rootStore'
+import { Reducer } from '@rxsv/core';
+import { AppAction } from '@rootStore';
 
 const initialUserState = {
     sth: '',
@@ -104,35 +113,42 @@ export const userReducer: Reducer<AppAction, UserState> = (state = initialUserSt
     }
 };
 
-// effects.ts
-import { ofType } from 'rxsv';
-import { AppEffect } from '@/rootStore'
+import { ofType } from '@rxsv/core';
+import { AppEffect } from '@/rootStore';
 
 const userChangedEffectEffect: AppEffect = action$ =>
     action$.pipe(
-        ofType(USER_CHANGED),
+        ofType(USER_CHANGED), // `ofType` will work only with simple actions created by `createAction`. It loses type safety for 4 or more elements
         debounceTime(1000),
-        mapTo(VisualizationActions.dataEntryActivated('turn on!')),
+        mapTo(TodoActions.REMOVE_TODO('1'))
     );
 
 ///////////////// rootState.ts
-import { Store, Effect, combineReducers, combineEffects } from 'rxsv';
-import { VisActions } from '@/modules/visualization/store'
-import { UserActions } from '@/modules/users/store'
 
-const rootReducer = combineReducers({ users: userReducer, vis: visReducer });
-const rootEffect = combineEffects(visEffect, userChangedEffectEffect);
+// this is supposed to be root of your applications
+// here you can combine application modules, inject dependencies to your effects .etc
+
+import { Store, Effect, combineReducers, combineEffects } from '@rxsv/core';
+import { TodosActions, todosReducer, todosEffect } from '@/modules/todos/store';
+import { UserActions, usersReducer, usersEffect } from '@/modules/users/store';
+
+// combineReducers works the same way as in `Redux`
+// it relies on the `===` comparisment so never mutate your state data!
+const rootReducer = combineReducers({ users: usersReducer, todos: usersReducer });
+
+// combineEffects will merge all of your effects into one super-effect 💥 Just as in `Redux-Observable`
+const rootEffect = combineEffects(usersEffect, todosEffect);
 
 export const rxStore = createStore(rootReducer, rootEffectFactory);
 
-export type AppAction = VisActions | UserActions
+export type AppAction = VisActions | UserActions;
 export type AppState = ReturnType<typeof rootReducer>;
 export type AppEffect = Effect<AppAction, AppState>;
 export type AppStore = Store<AppAction, AppState>;
 
 ///////////////// main.ts
 import VueRx from 'vue-rx';
-import { rxStore } from '@/rootStore'
+import { rxStore } from '@/rootStore';
 
 Vue.use(VueRx);
 
@@ -140,10 +156,10 @@ Vue.use(VueRx);
 // (remember about adding appropriate typings that are extending Vue namespace)
 // However such setup doesn't work in the embeddable applications
 // and might not be that clear
-Vue.prototype.$rxStore = rxStore
+Vue.prototype.$rxStore = rxStore;
 ```
 
-### Connecting to the App:
+### Connecting to the Vue App:
 
 If you don't want global property, the store could be initialized in vue's `Provide` and injected to the components through `Inject`
 
@@ -185,8 +201,7 @@ Thanks to the `vue-rx` observables will be unpacked so their values could used w
     <button @click="onClick">
       dispatch
     </button>
-    <SomeOtherComponent :title="name$" />
-    <p>{{ name$ }}</p>
+    <SomeOtherComponent :todos="todos$" />
     <p> {{ isInital$ }} </p>
   </p>
 </template>
@@ -199,7 +214,7 @@ import { Observable } from 'rxjs';
 import { Observables } from 'vue-rx';
 
 import SomeOtherComponent from './SomeOtherComponent.vue';
-import { VisualizationActions } from '@/modules/visualization/store';
+import { TodosActions, todosSelector } from '@/modules/visualization/store';
 import { AppStore } from '@/rootStore'
 
 @Component<Home>({
@@ -210,7 +225,7 @@ import { AppStore } from '@/rootStore'
         const { state$ } = this.rxStore;
 
         return {
-            name$: state$.pipe(select(visualizationNameSelector),
+            todos$: todosSelector(state$),
             isInital$: state$.pipe(
                 select(usersSelector),
                 map(el => el.length > 0)
@@ -222,7 +237,7 @@ export default class Home extends Vue {
     @Inject('store') public readonly rxStore!: AppStore
 
     private onClick(): void {
-        this.rxStore.action$.next(VisualizationActions.dataEntryActivated('clicked'));
+        this.rxStore.action$.next(TodosActions.ADD_TODO({ id: 1, text: "kek", isDone: false }));
     }
 }
 </script>
