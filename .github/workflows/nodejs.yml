@@ -3,23 +3,18 @@ name: Node CI
 on: [push]
 
 jobs:
-  build:
-
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [12.x]
-
-    steps:
-      - uses: borales/actions-yarn@v2.0.0
-        with:
-          cmd: install
-      - uses: borales/actions-yarn@v2.0.0
-        with:
-          cmd: bootstrap 
-      - uses: borales/actions-yarn@v2.0.0
-        with:
-          cmd: test
-    env:
-        CI: true
+    build:
+        runs-on: ubuntu-16.04
+        strategy:
+            matrix:
+                node: ['10', '13']
+        name: Node ${{ matrix.node }} sample
+        steps:
+            - uses: actions/checkout@v1
+            - name: Setup node
+              uses: actions/setup-node@v1
+              with:
+                  node-version: ${{ matrix.node }}
+            - run: yarn install
+            - run: yarn bootstrap
+            - run: yarn test
