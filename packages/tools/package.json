@@ -1,18 +1,17 @@
 {
-    "name": "demo",
+    "name": "tools",
     "version": "1.0.0",
-    "private": true,
-    "description": "dev demo",
+    "description": "rxsv tools",
     "author": "Grzegorz Bielski <pesiok@gmail.com>",
     "homepage": "https://github.com/grzegorz-bielski/rxsv#readme",
     "license": "MIT",
     "main": "dist/index.js",
     "directories": {
-        "lib": "dist",
+        "lib": "lib",
         "test": "__tests__"
     },
     "files": [
-        "dist"
+        "lib"
     ],
     "publishConfig": {
         "registry": "https://registry.yarnpkg.com"
@@ -22,18 +21,13 @@
         "url": "git+https://github.com/grzegorz-bielski/rxsv.git"
     },
     "scripts": {
-        "test": "echo \"Error: run tests from root\" && exit 0",
-        "watch": "webpack-dev-server --open"
+        "test": "echo \"Error: run tests from root\" && exit 1"
     },
     "bugs": {
         "url": "https://github.com/grzegorz-bielski/rxsv/issues"
     },
     "dependencies": {
-        "@rxsv/core": "^1.0.0",
-        "clean-webpack-plugin": "^3.0.0",
-        "html-webpack-plugin": "^3.2.0",
-        "ts-loader": "^6.2.1",
-        "webpack": "^4.41.6",
-        "webpack-dev-server": "^3.10.3"
-    }
+        "@rxsv/core": "^1.0.0"
+    },
+    "devDependencies": {}
 }

@@ -1,6 +1,5 @@
 {
     "name": "rxsv",
-    "version": "0.0.11",
     "description": "RxJS based state management library",
     "author": "Grzegorz Bielski <pesiok@gmail.com>",
     "private": true,
