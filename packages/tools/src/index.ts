@@ -1,26 +1,38 @@
+/* eslint-disable @typescript-eslint/no-namespace */
 /* eslint-disable functional/no-return-void */
-import {
-    U,
-    ActionsUnion,
-    createReducer,
-    Effect,
-    fromActions,
-    select,
-    createStore,
-    Selector,
-    Action,
-    Store,
-} from '@rxsv/core';
-import { withLatestFrom, map, tap, mapTo } from 'rxjs/operators';
+import { Action, Store } from '@rxsv/core';
+import { withLatestFrom, tap, mapTo } from 'rxjs/operators';
+import { Observable, empty } from 'rxjs';
 
 type Unsubscribe = () => void;
-type DevToolsAction<T extends string, P, S> = Action<T, P> & { state: S };
+// type
+
+namespace DevTools {
+    export type ActionTypes = 'START' | 'DISPATCH' | 'ACTION';
+    export type Action<S> = {
+        id?: string;
+        type: ActionTypes;
+        state: S;
+        source: '@devtools-extension';
+        payload: unknown;
+    };
+    export type UnderlyingAction =
+        | {
+              actionId: string;
+              type: 'JUMP_TO_ACTION';
+          }
+        | {
+              type: 'COMMIT';
+              timestamp: number;
+          }
+        | {
+              type: 'TOGGLE_ACTION';
+              id: string;
+          };
+}
 
 interface DevTools {
-    readonly subscribe: <T extends string, P, S>(
-        fn: (msg: DevToolsAction<T, P, S>) => void,
-    ) => Unsubscribe;
-
+    readonly subscribe: <S>(fn: (msg: DevTools.Action<S>) => void) => Unsubscribe;
     readonly send: <S, A extends Action>(action: A, state: S | null) => void;
 }
 
@@ -36,18 +48,32 @@ declare global {
     }
 }
 
-export function attachToDevTools<A extends Action, S>({ action$, state$ }: Store<A, S>): void {
-    if (!window.__REDUX_DEVTOOLS_EXTENSION__) {
-        return;
-    }
+export function getDevToolsExtension(): DevToolsExtension | undefined {
+    return window.__REDUX_DEVTOOLS_EXTENSION__;
+}
 
-    const devTools = window.__REDUX_DEVTOOLS_EXTENSION__.connect();
+export function attachToDevTools<A extends Action, S>(
+    { action$, state$ }: Store<A, S>,
+    devToolsExtension = getDevToolsExtension(),
+): Observable<DevTools> {
+    return !devToolsExtension
+        ? empty()
+        : new Observable(observer => {
+              const devTools = devToolsExtension.connect();
+              const storeSubscription = state$
+                  .pipe(
+                      withLatestFrom(action$),
+                      tap(([state, action]) => devTools.send(action, state)),
+                      mapTo(devTools),
+                  )
+                  .subscribe(() => observer.next(devTools));
 
-    state$
-        .pipe(
-            withLatestFrom(action$),
-            tap(([state, action]) => devTools.send(action, state)),
-            // mapTo(devTools),
-        )
-        .subscribe();
+              const unsubscribeFromDevTools = devTools.subscribe(y => console.log('y', y));
+
+              return () => {
+                  storeSubscription.unsubscribe();
+                  unsubscribeFromDevTools();
+                  devToolsExtension.disconnect();
+              };
+          });
 }

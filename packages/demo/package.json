@@ -1,7 +1,6 @@
 {
-    "name": "demo",
+    "name": "@rxsv/demo",
     "version": "1.0.0",
-    "private": true,
     "description": "dev demo",
     "author": "Grzegorz Bielski <pesiok@gmail.com>",
     "homepage": "https://github.com/grzegorz-bielski/rxsv#readme",
@@ -30,6 +29,7 @@
     },
     "dependencies": {
         "@rxsv/core": "^1.0.0",
+        "@rxsv/tools": "^1.0.0",
         "clean-webpack-plugin": "^3.0.0",
         "html-webpack-plugin": "^3.2.0",
         "ts-loader": "^6.2.1",

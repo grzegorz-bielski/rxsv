@@ -1,6 +1,7 @@
 {
-    "name": "tools",
+    "name": "@rxsv/tools",
     "version": "1.0.0",
+    "private": true,
     "description": "rxsv tools",
     "author": "Grzegorz Bielski <pesiok@gmail.com>",
     "homepage": "https://github.com/grzegorz-bielski/rxsv#readme",
@@ -21,7 +22,13 @@
         "url": "git+https://github.com/grzegorz-bielski/rxsv.git"
     },
     "scripts": {
-        "test": "echo \"Error: run tests from root\" && exit 1"
+        "build": "npm run clean && tsc -p tsconfig.json",
+        "prepublishOnly": "npm run build",
+        "test": "echo \"Error: run tests from root\" && exit 0",
+        "test:watch": "jest --watch",
+        "watch": "tsc -w -p tsconfig.json",
+        "clean": "rimraf ./dist/* && rimraf tsconfig.build.tsbuildinfo",
+        "serve:cov": "http-server ./coverage/lcov-report"
     },
     "bugs": {
         "url": "https://github.com/grzegorz-bielski/rxsv/issues"

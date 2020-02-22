@@ -1,3 +1,4 @@
+/* eslint-disable functional/immutable-data */
 import { ignoreElements, tap } from 'rxjs/operators';
 import { combineLatest } from 'rxjs';
 import {
@@ -10,6 +11,7 @@ import {
     createStore,
     Selector,
 } from '@rxsv/core';
+import { attachToDevTools } from '@rxsv/tools';
 
 const Actions = U.createUnion(
     U.caseOf('ADD_TODO')<Todo>(),
@@ -47,6 +49,11 @@ export const selector: Selector<State, ViewInfo[]> = state$ =>
     );
 
 const store = createStore(reducer, effect);
+
+attachToDevTools(store).subscribe();
+
+(window as any).store = store;
+(window as any).Actions = Actions;
 
 store.state$.subscribe(state => {
     // do sth in your app
