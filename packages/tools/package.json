@@ -6,13 +6,11 @@
     "author": "Grzegorz Bielski <pesiok@gmail.com>",
     "homepage": "https://github.com/grzegorz-bielski/rxsv#readme",
     "license": "MIT",
-    "main": "dist/index.js",
-    "directories": {
-        "lib": "lib",
-        "test": "__tests__"
-    },
+    "main": "dist/lib/index.js",
+    "module": "dist/esm/index.js",
+    "types": "dist/esm/index.d.ts",
     "files": [
-        "lib"
+        "dist/**/*"
     ],
     "publishConfig": {
         "registry": "https://registry.yarnpkg.com"
@@ -22,11 +20,11 @@
         "url": "git+https://github.com/grzegorz-bielski/rxsv.git"
     },
     "scripts": {
-        "build": "npm run clean && tsc -p tsconfig.json",
+        "build": "npm run clean && tsc -p tsconfig.lib.json && tsc -p tsconfig.esm.json",
         "prepublishOnly": "npm run build",
         "test": "echo \"Error: run tests from root\" && exit 0",
         "test:watch": "jest --watch",
-        "watch": "tsc -w -p tsconfig.json",
+        "watch": "tsc -w -p tsconfig.esm.json",
         "clean": "rimraf ./dist/* && rimraf tsconfig.build.tsbuildinfo",
         "serve:cov": "http-server ./coverage/lcov-report"
     },
