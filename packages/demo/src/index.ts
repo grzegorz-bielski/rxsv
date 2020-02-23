@@ -1,6 +1,6 @@
 /* eslint-disable functional/immutable-data */
-import { ignoreElements, tap, mergeMap, mapTo, delay } from 'rxjs/operators';
-import { combineLatest, of, from } from 'rxjs';
+import { mergeMap, delay } from 'rxjs/operators';
+import { combineLatest, from } from 'rxjs';
 import {
     U,
     ActionsUnion,
@@ -10,30 +10,21 @@ import {
     select,
     createStore,
     Selector,
-    createAction,
-    Reducer,
     combineReducers,
+    combineEffects,
 } from '@rxsv/core';
-import { attachToDevTools } from '@rxsv/tools';
+import { withDevTools } from '@rxsv/tools';
 
-const AsyncActions = U.createUnion(
-    U.caseOf('STARTED')(),
-    U.caseOf('FAILED')(),
-    U.caseOf('FINISHED')(),
-);
-type AsyncActions = ActionsUnion<typeof AsyncActions>;
+const PingPongActions = U.createUnion(U.caseOf('PING')(), U.caseOf('PONG')());
+type AsyncActions = ActionsUnion<typeof PingPongActions>;
 
-const Actions = U.createUnion(
+const TodoActions = U.createUnion(
     U.caseOf('ADD_TODO')<Todo>(),
     U.caseOf('REMOVE_TODO')<Todo['id']>(),
     U.caseOf('UPDATE_TODO')<Todo>(),
 );
 type Todo = { id: string; text: string; isDone: boolean };
-
-type TodoActions = ActionsUnion<typeof Actions>;
-
-type Actions = TodoActions | AsyncActions;
-// type State = ReturnType<typeof todosReducer>;
+type TodoActions = ActionsUnion<typeof TodoActions>;
 
 const initialState: Todo[] = [];
 export const todosReducer = createReducer(initialState)<TodoActions, Actions>({
@@ -43,31 +34,48 @@ export const todosReducer = createReducer(initialState)<TodoActions, Actions>({
     REMOVE_TODO: (state, { payload }) => state.filter(({ id }) => id !== payload),
 });
 
-export const rootReducer = todosReducer;
+export const isPingReducer = createReducer(false)<AsyncActions, Actions>({
+    PING: () => true,
+    PONG: () => false,
+});
+
+export const rootReducer = combineReducers({
+    todos: todosReducer,
+    isPing: isPingReducer,
+});
 
 type State = ReturnType<typeof rootReducer>;
+type Actions = TodoActions | AsyncActions;
 
-export const effect: Effect<Actions, State> = action$ =>
-    action$.pipe(
-        fromActions(Actions.ADD_TODO),
+export const rootEffect = (): Effect<Actions, State> => {
+    const toPing: Effect<Actions, State> = action$ =>
+        action$.pipe(
+            fromActions(TodoActions.ADD_TODO),
+            mergeMap(() => from(Promise.resolve(PingPongActions.PING()))),
+        );
 
-        // 🤔somehow effects are logging actions in reverse order when they are mapping to async source..
-        mergeMap(() => from(Promise.resolve(AsyncActions.STARTED()))),
-    );
+    const fromPing: Effect<Actions, State> = action$ =>
+        action$.pipe(
+            fromActions(PingPongActions.PING),
+            mergeMap(() => from(Promise.resolve(PingPongActions.PONG())).pipe(delay(1000))),
+        );
+
+    return combineEffects(toPing, fromPing);
+};
 
 type ViewInfo = { todo: Todo; length: number };
 
 export const selector: Selector<State, ViewInfo[]> = state$ =>
     combineLatest(
-        state$.pipe(select(a => a)), // take part(s) of the state
-        state$.pipe(select(a => a.length)),
+        state$.pipe(select(a => a.todos)), // take part(s) of the state
+        state$.pipe(select(a => a.todos.length)),
         (todos, length) => todos.map(todo => ({ todo, length })), // do your projection
     );
 
-const store = attachToDevTools(createStore(rootReducer, effect));
+const store = withDevTools(createStore(rootReducer, rootEffect()));
 
 (window as any).store = store;
-(window as any).Actions = Actions;
+(window as any).Actions = { ...PingPongActions, ...TodoActions };
 
 store.state$.subscribe(state => {
     // do sth in your app

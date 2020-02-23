@@ -51,10 +51,10 @@ namespace DevTools {
     ): Observable<DevTools> =>
         new Observable(observer => {
             const devTools = devToolsExtension.connect();
-            const storeSubscription = store.state$
+            const storeSubscription = store.action$
                 .pipe(
-                    withLatestFrom(store.action$),
-                    tap(([state, action]) => devTools.send(action, state)),
+                    withLatestFrom(store.state$),
+                    tap(([action, state]) => devTools.send(action, state)),
                     mapTo(devTools),
                 )
                 .subscribe(() => observer.next(devTools));
@@ -71,16 +71,16 @@ namespace DevTools {
             catchError(_err => empty()),
         );
 
-    export const subscribeTo = <S, P>(devTools: DevTools): Observable<Action<P>> =>
+    export const subscribeTo = <P>(devTools: DevTools): Observable<Action<P>> =>
         new Observable(observer => {
-            const unsubscribe = devTools.subscribe<S, P>(action => observer.next(action));
+            const unsubscribe = devTools.subscribe<P>(action => observer.next(action));
 
             return () => void unsubscribe();
         });
 }
 
 interface DevTools {
-    readonly subscribe: <S, P>(fn: (msg: DevTools.Action<P>) => void) => DevTools.Unsubscribe;
+    readonly subscribe: <P>(fn: (msg: DevTools.Action<P>) => void) => DevTools.Unsubscribe;
     readonly send: <S, A extends StoreAction>(action: A, state: S | null) => void;
 }
 
@@ -95,7 +95,7 @@ export function getDevToolsExtension(): DevTools.Extension | undefined {
     return window.__REDUX_DEVTOOLS_EXTENSION__;
 }
 
-export function attachToDevTools<A extends StoreAction, S>(
+export function withDevTools<A extends StoreAction, S>(
     store: Store<A, S>,
     devToolsExtension = getDevToolsExtension(),
 ): Store<A, S> {
