@@ -73,6 +73,9 @@ export const selector: Selector<State, ViewInfo[]> = state$ =>
     );
 
 const store = withDevTools(createStore(rootReducer, rootEffect()));
+const store2 = withDevTools(createStore(rootReducer, rootEffect(), 'instance-2'));
+
+store2.state$.subscribe();
 
 (window as any).store = store;
 (window as any).Actions = { ...PingPongActions, ...TodoActions };

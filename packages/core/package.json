@@ -1,6 +1,6 @@
 {
     "name": "@rxsv/core",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "sideEffects": false,
     "description": "RxJS based state management library - core",
     "keywords": [
@@ -31,7 +31,7 @@
         "prepublishOnly": "npm run build",
         "test": "jest",
         "test:watch": "jest --watch",
-        "watch": "tsc -w -p tsconfig.lib.json",
+        "watch": "tsc -w -p tsconfig.esm.json",
         "clean": "rimraf ./dist/* && rimraf tsconfig.build.tsbuildinfo",
         "serve:cov": "http-server ./coverage/lcov-report"
     },

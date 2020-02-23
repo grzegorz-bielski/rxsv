@@ -26,8 +26,12 @@ namespace DevTools {
 
     export type Unsubscribe = () => void;
 
+    export interface ExtensionOptions {
+        name?: string;
+    }
+
     export interface Extension {
-        readonly connect: () => DevTools;
+        readonly connect: (options?: ExtensionOptions) => DevTools;
         readonly disconnect: () => void;
     }
 
@@ -50,7 +54,8 @@ namespace DevTools {
         store: Store<A, S>,
     ): Observable<DevTools> =>
         new Observable(observer => {
-            const devTools = devToolsExtension.connect();
+            console.log(store);
+            const devTools = devToolsExtension.connect({ name: store.name });
             const storeSubscription = store.action$
                 .pipe(
                     withLatestFrom(store.state$),
@@ -68,7 +73,7 @@ namespace DevTools {
     export const toStoreState = <S>(stringifiedState: string): Observable<S> =>
         of(stringifiedState).pipe(
             map(s => JSON.parse(s) as S),
-            catchError(_err => empty()),
+            catchError(() => empty()),
         );
 
     export const subscribeTo = <P>(devTools: DevTools): Observable<Action<P>> =>

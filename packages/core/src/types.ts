@@ -37,7 +37,7 @@ export type Store<A, S> = Readonly<{
     action$: BehaviorSubject<A>;
     state$: Observable<S>;
     effect$: Subject<Effect<A, S>>;
-    reducer$: Subject<Reducer<A, S>>;
+    name: string;
 }>;
 
 /**
