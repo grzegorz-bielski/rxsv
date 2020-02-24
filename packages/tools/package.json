@@ -22,7 +22,7 @@
     "scripts": {
         "build": "npm run clean && tsc -p tsconfig.lib.json && tsc -p tsconfig.esm.json",
         "prepublishOnly": "npm run build",
-        "test": "echo \"Error: run tests from root\" && exit 0",
+        "test": "jest",
         "test:watch": "jest --watch",
         "watch": "tsc -w -p tsconfig.esm.json",
         "clean": "rimraf ./dist/* && rimraf tsconfig.build.tsbuildinfo",
