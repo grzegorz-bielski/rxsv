@@ -1,6 +1,7 @@
 {
     "name": "@rxsv/demo",
     "version": "1.0.1",
+    "private": true,
     "description": "dev demo",
     "author": "Grzegorz Bielski <pesiok@gmail.com>",
     "homepage": "https://github.com/grzegorz-bielski/rxsv#readme",

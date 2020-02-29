@@ -1,7 +1,6 @@
 {
     "name": "@rxsv/core",
     "version": "1.0.1",
-    "private": true,
     "sideEffects": false,
     "description": "RxJS based state management library - core",
     "keywords": [
