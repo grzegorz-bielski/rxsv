@@ -37,7 +37,7 @@ export namespace DevTools {
     type Commit = { type: 'COMMIT'; timestamp: number };
     type ToggleAction = { type: 'TOGGLE_ACTION'; id: string };
 
-    type UnderlyingAction = JumpToAction | Commit | ToggleAction;
+    export type UnderlyingAction = JumpToAction | Commit | ToggleAction;
 
     const isUnderlyingAction = (payload: unknown): payload is UnderlyingAction =>
         typeof payload === 'object' && typeof (payload as { type: string })?.type === 'string';
