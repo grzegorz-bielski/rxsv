@@ -1,6 +1,6 @@
 {
     "name": "@rxsv/tools",
-    "version": "1.0.1",
+    "version": "1.1.0-alpha.1",
     "description": "rxsv tools",
     "author": "Grzegorz Bielski <pesiok@gmail.com>",
     "homepage": "https://github.com/grzegorz-bielski/rxsv#readme",
@@ -31,7 +31,7 @@
         "url": "https://github.com/grzegorz-bielski/rxsv/issues"
     },
     "dependencies": {
-        "@rxsv/core": "^1.0.1"
+        "@rxsv/core": "^1.1.0-alpha.0"
     },
-    "devDependencies": {}
+    "gitHead": "4e6471b494dc2ce97bc729d757e398a8c0b6c2af"
 }
