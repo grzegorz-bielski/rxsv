@@ -1,5 +1,5 @@
-import { DevTools } from '../DevTools';
-import { createStore } from '@rxsv/core/src';
+import { DevTools } from '../';
+import { createStore } from '@rxsv/core';
 
 describe('DevTools', () => {
     describe('isJumpToAction', () => {
@@ -61,18 +61,53 @@ describe('DevTools', () => {
             expect(mockDevToolsExtension.disconnect).toHaveBeenCalled();
         });
 
-        // it('sends actions and state to the devtools', () => {
-        //     const sendSpy = jest.fn();
-        //     const mockDevToolsExtension = mockExtension(sendSpy);
-        //     // const store = createStore(() => true);
+        it('sends actions and state to the devtools', () => {
+            const sendSpy: jest.Mock<DevTools['send']> = jest.fn();
+            const mockDevToolsExtension = mockExtension(sendSpy);
+            const mockAction = { type: 'SOME_ACTION' };
+            const store = createStore(() => true);
 
-        //     // DevTools.connectTo(
-        //     //     mockDevToolsExtension,
-        //     //     createStore(() => true),
-        //     // ).subscribe();
+            DevTools.connectTo(mockDevToolsExtension, store).subscribe();
 
-        //     // store.action$.next({ type: 'SOME_ACTION' });
-        //     // expect(sendSpy).toHaveBeenCalledTimes(1);
-        // });
+            store.action$.next(mockAction);
+            expect(sendSpy).toHaveBeenCalledTimes(2);
+            expect(sendSpy).toHaveBeenNthCalledWith(1, { type: '@@INIT' }, true);
+            expect(sendSpy).toHaveBeenNthCalledWith(2, mockAction, true);
+        });
+    });
+
+    describe('toStoreState', () => {
+        it('returns parsed JSON state', done => {
+            type MockState = { hello: true };
+            const mockState = `{ "hello": true }`;
+
+            DevTools.toStoreState<MockState>(mockState).subscribe(state => {
+                expect(state).toEqual(JSON.parse(mockState));
+                done();
+            });
+        });
+
+        it('returns empty observable on error', () => {
+            const notValidJSON = `{ kek }`;
+            const onNext = jest.fn();
+            const onError = jest.fn();
+            const onComplete = jest.fn();
+
+            DevTools.toStoreState(notValidJSON).subscribe(onNext, onError, onComplete);
+
+            expect(onNext).not.toHaveBeenCalled();
+            expect(onError).not.toHaveBeenCalled();
+            expect(onComplete).toHaveBeenCalled();
+        });
+    });
+
+    describe('subscribeTo', () => {
+        it('subscribes to the devTools', () => {
+            const mockedDevTools = { subscribe: jest.fn(), send: jest.fn() } as DevTools;
+
+            DevTools.subscribeTo(mockedDevTools).subscribe();
+
+            expect(mockedDevTools.subscribe).toHaveBeenCalled();
+        });
     });
 });

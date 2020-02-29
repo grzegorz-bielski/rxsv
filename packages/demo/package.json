@@ -21,7 +21,8 @@
         "url": "git+https://github.com/grzegorz-bielski/rxsv.git"
     },
     "scripts": {
-        "test": "echo \"Error: run tests from root\" && exit 0",
+        "test": "echo \"No tests to run\" && exit 0",
+        "test:watch": "test",
         "watch": "webpack-dev-server --open"
     },
     "bugs": {

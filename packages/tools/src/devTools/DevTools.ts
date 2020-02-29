@@ -4,6 +4,9 @@ import { Action as StoreAction, Store } from '@rxsv/core';
 import { withLatestFrom, tap, mapTo, catchError, map } from 'rxjs/operators';
 import { Observable, of, empty } from 'rxjs';
 
+/**
+ * Redux devtools integrations
+ */
 export interface DevTools {
     readonly subscribe: <P>(fn: (msg: DevTools.Action<P>) => void) => DevTools.Unsubscribe;
     readonly send: <S, A extends StoreAction>(action: A, state: S | null) => void;
