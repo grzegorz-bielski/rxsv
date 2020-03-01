@@ -1,7 +1,7 @@
 ## rxsv
 
 [![Actions Status](https://github.com/{owner}/{repo}/workflows/{workflow_name}/badge.svg)](https://github.com/{owner}/{repo}/actions)
-[![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://lerna.js.org/)
+[![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://lerna.js.org/) [![Greenkeeper badge](https://badges.greenkeeper.io/grzegorz-bielski/rxsv.svg)](https://greenkeeper.io/)
 
 Framework agnostic minimal state management library based on `RxJS`, heavily inspired by `Redux` and `Redux-Observable` with limited boilerplate and TypeScript first approach.
 
