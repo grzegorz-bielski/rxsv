@@ -1,6 +1,5 @@
 {
     "name": "rxsv",
-    "version": "0.0.11",
     "description": "RxJS based state management library",
     "author": "Grzegorz Bielski <pesiok@gmail.com>",
     "private": true,
@@ -9,11 +8,12 @@
     ],
     "scripts": {
         "lerna": "lerna",
-        "bootstrap": "lerna bootstrap",
+        "bootstrap": "lerna bootstrap --force-local",
         "start": "lerna run start --stream",
         "build": "lerna run build --stream",
         "watch": "lerna run watch --parallel",
-        "test": "lerna run test --stream"
+        "test": "lerna run test --stream",
+        "test:watch": "lerna run test:watch --stream"
     },
     "license": "MIT",
     "peerDependencies": {

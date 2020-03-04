@@ -1,8 +1,8 @@
 {
-    "name": "demo",
-    "version": "1.0.0",
+    "name": "@rxsv/demo",
+    "version": "1.1.1-alpha.0",
     "private": true,
-    "description": "> TODO: description",
+    "description": "dev demo",
     "author": "Grzegorz Bielski <pesiok@gmail.com>",
     "homepage": "https://github.com/grzegorz-bielski/rxsv#readme",
     "license": "MIT",
@@ -22,13 +22,20 @@
         "url": "git+https://github.com/grzegorz-bielski/rxsv.git"
     },
     "scripts": {
-        "test": "echo \"Error: run tests from root\" && exit 0",
-        "watch": "tsc -w"
+        "test": "echo \"No tests to run\" && exit 0",
+        "test:watch": "test",
+        "watch": "webpack-dev-server --open"
     },
     "bugs": {
         "url": "https://github.com/grzegorz-bielski/rxsv/issues"
     },
     "dependencies": {
-        "@rxsv/core": "^1.0.0"
+        "@rxsv/core": "^1.1.1-alpha.0",
+        "@rxsv/tools": "^1.1.1-alpha.0",
+        "clean-webpack-plugin": "^3.0.0",
+        "html-webpack-plugin": "^3.2.0",
+        "ts-loader": "^6.2.1",
+        "webpack": "^4.41.6",
+        "webpack-dev-server": "^3.10.3"
     }
 }

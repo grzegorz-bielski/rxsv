@@ -1,15 +1,7 @@
 {
-    "name": "@rxsv/core",
+    "name": "@rxsv/tools",
     "version": "1.1.1-alpha.0",
-    "sideEffects": false,
-    "description": "RxJS based state management library - core",
-    "keywords": [
-        "rxjs",
-        "state",
-        "vue",
-        "react",
-        "observable"
-    ],
+    "description": "rxsv tools",
     "author": "Grzegorz Bielski <pesiok@gmail.com>",
     "homepage": "https://github.com/grzegorz-bielski/rxsv#readme",
     "license": "MIT",
@@ -20,7 +12,7 @@
         "dist/**/*"
     ],
     "publishConfig": {
-        "access": "public"
+        "registry": "https://registry.yarnpkg.com"
     },
     "repository": {
         "type": "git",
@@ -37,6 +29,9 @@
     },
     "bugs": {
         "url": "https://github.com/grzegorz-bielski/rxsv/issues"
+    },
+    "dependencies": {
+        "@rxsv/core": "^1.1.1-alpha.0"
     },
     "gitHead": "4e6471b494dc2ce97bc729d757e398a8c0b6c2af"
 }
