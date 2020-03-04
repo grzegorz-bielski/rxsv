@@ -7,9 +7,10 @@ import { Action, Reducer, Store, Effect, witness } from '../types';
 export function createStore<A extends Action, S>(
     rootReducer: Reducer<A, S>,
     rootEffect?: Effect<A, S>,
+    storeName?: string,
 ): Store<A, S> {
-    // setup store and reducers
     const action$ = new BehaviorSubject<A>(createAction('@@INIT') as A);
+    const effect$ = new Subject<Effect<A, S>>();
 
     const state$ = action$.pipe(
         scan(
@@ -19,9 +20,6 @@ export function createStore<A extends Action, S>(
         shareReplay(1),
     );
 
-    // setup effects pipeline
-    const effect$ = new Subject<Effect<A, S>>();
-
     effect$
         .pipe(mergeMap(effect => effect(action$, state$)))
         .subscribe(action => action$.next(action));
@@ -30,9 +28,12 @@ export function createStore<A extends Action, S>(
         effect$.next(rootEffect);
     }
 
+    const name = storeName ?? 'rxsv';
+
     return {
         action$,
         state$,
         effect$,
+        name,
     };
 }
