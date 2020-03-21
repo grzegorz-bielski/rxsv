@@ -1259,6 +1259,13 @@
   dependencies:
     "@types/node" ">= 8"
 
+"@rxsv/tools@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@rxsv/tools/-/tools-1.2.0.tgz#fbb32f9ea0f58589c6bed7fc0d5ddad91752d6dc"
+  integrity sha512-fDRuxQZTzzdJ9zbZn2R4jtRp38TLXOyPuijPlpkU8r++QT5dB0Y7aF5FTDJczEZGSy/8JXiefLsbDvVsBDpGTw==
+  dependencies:
+    "@rxsv/core" "^1.2.0"
+
 "@sinonjs/commons@^1.7.0":
   version "1.7.1"
   resolved "https://registry.yarnpkg.com/@sinonjs/commons/-/commons-1.7.1.tgz#da5fd19a5f71177a53778073978873964f49acf1"
@@ -7472,10 +7479,10 @@ prettier-linter-helpers@^1.0.0:
   dependencies:
     fast-diff "^1.1.2"
 
-prettier@^1.19.1:
-  version "1.19.1"
-  resolved "https://registry.yarnpkg.com/prettier/-/prettier-1.19.1.tgz#f7d7f5ff8a9cd872a7be4ca142095956a60797cb"
-  integrity sha512-s7PoyDv/II1ObgQunCbB9PdLmUcBZcnWOcxDh7O0N/UwDEsHyqkW+Qh28jW+mVuCdx7gLB0BotYI1Y6uI9iyew==
+prettier@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.0.0.tgz#9c8fdba0aeae3faf0d9d9391623ac4f9321a4455"
+  integrity sha512-vI55PC+GFLOVtpwr2di1mYhJF36v+kztJov8sx3AmqbfdA+2Dhozxb+3e1hTgoV9lyhnVJFF3Z8GCVeMBOS1bA==
 
 pretty-error@^2.0.2:
   version "2.1.1"
