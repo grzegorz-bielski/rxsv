@@ -1,6 +1,6 @@
 # `tools`
 
-An utilities package for the `rxsv`.
+A utility package for the `rxsv`.
 
 ```bash
 npm install rxjs @rxsv/core @rxsv/tools
@@ -12,7 +12,7 @@ Connect to the [Redux DevTools](https://github.com/zalmoxisus/redux-devtools-ext
 
 Supported features:
 
--   listening to the `rxsv` actions and displaying current state
+-   listening to the `rxsv` actions and displaying the current state
 -   time travel debugging
 
 ```typescript
@@ -23,7 +23,7 @@ const store = createStore(a => a);
 const enhancedStore = withDevTools(store);
 ```
 
-You can connect multiple `rxsv` store to the devtools, but in such situations you might want to name them.
+You can connect multiple `rxsv` stores to the devtools. They can be distinguished by passing a custom name.
 
 ```typescript
 const store = createStore(reducer, effect, 'ui-widget');
