@@ -45,9 +45,7 @@ describe('createStore', () => {
         it('should not create effects pipeline if no effects are provided', () => {
             const spy = jest.spyOn(Subject.prototype, 'next');
 
-            createStore(reducer, effect);
-            createStore(reducer);
-
+            createStore(reducer).state$.subscribe();
             expect(spy).toHaveBeenCalledTimes(1);
 
             spy.mockRestore();
@@ -103,13 +101,21 @@ describe('createStore', () => {
         it('should set up effects pipeline', () => {
             const effectMock = jest.fn(effect);
 
-            const { action$, state$ } = createStore(reducer, effectMock);
+            createStore(reducer, effectMock).state$.subscribe();
 
             expect(effectMock).toBeCalledTimes(1);
-            expect(effectMock).toHaveBeenCalledWith(action$, state$);
         });
 
-        it('should send actions back to the action$ stream', () => {
+        it('should not complete the state$ stream upon initialization', () => {
+            const effectMock = jest.fn(effect);
+            const completeSpy = jest.fn();
+
+            createStore(reducer, effectMock).state$.subscribe({ complete: completeSpy });
+
+            expect(completeSpy).not.toHaveBeenCalled();
+        });
+
+        it('should send actions back to the action$ stream preserving the dispatch order', () => {
             const someOtherAction = { type: 'Other' };
             const someEffect: Effect<Action, {}> = action$ =>
                 action$.pipe(ofType(someOtherAction.type), mapTo(someAction));
@@ -121,7 +127,10 @@ describe('createStore', () => {
             store.action$.next(someOtherAction);
 
             expect(reducerMock).toBeCalledTimes(4);
-            expect(reducerMock).toHaveBeenLastCalledWith(initialState, someOtherAction);
+            expect(reducerMock).toHaveBeenNthCalledWith(1, void 0, initStateAction);
+            expect(reducerMock).toHaveBeenNthCalledWith(2, initialState, initAction);
+            expect(reducerMock).toHaveBeenNthCalledWith(3, initialState, someOtherAction);
+            expect(reducerMock).toHaveBeenNthCalledWith(4, initialState, someAction);
         });
     });
 });
