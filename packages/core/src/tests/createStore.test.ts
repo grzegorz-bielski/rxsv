@@ -98,7 +98,7 @@ describe('createStore', () => {
     });
 
     describe('effects', () => {
-        it('should set up effects pipeline', () => {
+        it('should set up effects pipeline from state$', () => {
             const effectMock = jest.fn(effect);
 
             createStore(reducer, effectMock).state$.subscribe();

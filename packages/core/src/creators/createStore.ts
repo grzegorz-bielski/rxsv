@@ -22,7 +22,7 @@ export function createStore<A extends Action, S>(
 
     const state$ = _state$.pipe(source$ =>
         // effects initialization will happen only once
-        // it is triggered by the first subscriber to the `state$` or `action$`
+        // it is triggered by the first subscriber to the `state$`
         concat(source$.pipe(tap(setupEffectsPipeline), take(1), ignoreElements()), source$),
     );
 
