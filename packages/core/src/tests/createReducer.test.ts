@@ -26,7 +26,7 @@ describe('createReducer', () => {
         expect(newState[0]).toBe(payload);
     });
 
-    it('returns previous/defualt state if the provided is undefined', () => {
+    it('returns previous/default state if the provided is undefined', () => {
         const newState = reducer(witness(), Actions.ADD_TODO(payload));
 
         expect(newState[0]).toBeDefined();
