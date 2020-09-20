@@ -1,5 +1,5 @@
-import { scan, mergeMap, shareReplay } from 'rxjs/operators';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { scan, mergeMap, shareReplay, observeOn } from 'rxjs/operators';
+import { asyncScheduler, BehaviorSubject, Subject } from 'rxjs';
 
 import { createAction } from './createAction';
 import { Action, Reducer, Store, Effect, witness } from '../types';
@@ -21,7 +21,10 @@ export function createStore<A extends Action, S>(
     );
 
     effect$
-        .pipe(mergeMap(effect => effect(action$, state$)))
+        .pipe(
+            mergeMap(effect => effect(action$, state$)),
+            observeOn(asyncScheduler),
+        )
         .subscribe(action => action$.next(action));
 
     if (rootEffect) {
