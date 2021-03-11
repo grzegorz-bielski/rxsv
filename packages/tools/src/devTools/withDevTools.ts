@@ -1,5 +1,5 @@
 import { Action as StoreAction, Store } from '@rxsv/core';
-import { filter, pluck, mergeMap, distinctUntilKeyChanged } from 'rxjs/operators';
+import { filter, pluck, mergeMap, distinctUntilKeyChanged, shareReplay } from 'rxjs/operators';
 import { Observable, merge } from 'rxjs';
 import { DevTools } from './DevTools';
 
@@ -41,6 +41,6 @@ export function withDevTools<A extends StoreAction, S>(
 
     return {
         ...store,
-        state$: merge(store.state$, devToolsState$),
+        state$: merge(store.state$, devToolsState$).pipe(shareReplay(1)),
     };
 }

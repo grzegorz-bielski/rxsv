@@ -83,6 +83,19 @@ describe('withDevTools', () => {
             });
         });
     });
+
+    it('connects to redux extensions once regardless of state$ subscriptions', () => {
+        const mockConnect = jest.fn(() => ({ send: jest.fn(), subscribe: jest.fn() }));
+        const getExtension = getMockedDevToolExtension(mockConnect);
+        const extension = getExtension();
+        const store = createStore(id);
+        const enhancedStore = withDevTools(store, testConsole, () => extension);
+
+        enhancedStore.state$.subscribe();
+        enhancedStore.state$.subscribe();
+
+        expect(extension.connect).toHaveBeenCalledTimes(1);
+    });
 });
 
 function getMockedDevToolExtension(
